@@ -24,6 +24,7 @@ Citizens submit reports, officers handle them, admins oversee the workflow.
 - **Role-Based Access Control** — three roles: `USER`, `OFFICER`, `ADMIN`
 - **Full Report Lifecycle** — four-stage workflow: `SUBMITTED` → `ASSIGNED` → `IN_PROGRESS` → `RESOLVED`
 - **Role-Scoped Report Access** — users see own submissions, officers see assigned reports, admins see all
+- **Assignment Enforcement** — officers can only update status on reports explicitly assigned to them
 - **Department Management** — standalone department reference data (CRUD)
 - **Input Validation** — request validation using `@Valid` annotations throughout
 - **Dedicated Request DTOs** — separate DTO classes per domain keeping entities clean
@@ -41,7 +42,7 @@ HTTP Request
     → JWT Authentication Filter
     → Security Context (role verification)
     → Controller (request handling + @Valid)
-    → Service (business logic)
+    → Service (business logic + assignment enforcement)
     → Repository (JPA)
     → PostgreSQL
 ~~~
@@ -68,10 +69,12 @@ HTTP Request
 | POST | `/api/v1/reports` | ✅ | ✅ | ✅ |
 | GET | `/api/v1/reports` | ✅ | ✅ | ✅ |
 | GET | `/api/v1/reports/{id}` | ✅ | ✅ | ✅ |
-| GET | `/api/v1/reports/my-submissions` | ✅ | ❌ | ❌ |
+| GET | `/api/v1/reports/my-submissions` | ✅ | ✅ | ✅ |
 | GET | `/api/v1/reports/my-reports` | ❌ | ✅ | ❌ |
 | POST | `/api/v1/reports/{id}/assign` | ❌ | ❌ | ✅ |
 | POST | `/api/v1/reports/{id}/status` | ❌ | ✅ | ❌ |
+
+**Note:** `/my-submissions` returns only the currently authenticated user's own submitted reports — identity-based, not role-based. `/my-reports` returns reports assigned to the officer. Officers can only update status on reports assigned to them.
 
 ### Departments
 | Method | Endpoint | USER | OFFICER | ADMIN |
@@ -105,7 +108,7 @@ src/main/java/civil/
 │   ├── dto/               # ReportRequestDto, AssignReportRequest
 │   ├── entity/            # Report, ReportCategory (enum), ReportStatus (enum)
 │   ├── repository/
-│   └── service/
+│   └── service/           # Includes assignment enforcement logic
 ├── user/
 │   ├── controller/
 │   ├── dto/               # UserRequestDto
@@ -119,10 +122,12 @@ src/main/java/civil/
 
 ## Role Overview
 
-| Role | Permissions |
+All roles can submit reports and view their own submissions via `/my-submissions`.
+
+| Role | Unique Permissions |
 |---|---|
-| `USER` | Register, submit reports, view own submissions, track status |
-| `OFFICER` | Submit reports, view assigned reports, update report status |
+| `USER` | Track own report status through full lifecycle |
+| `OFFICER` | View assigned reports, update status (assigned reports only) |
 | `ADMIN` | View all users, assign reports to officers, manage departments |
 
 ---
@@ -177,7 +182,7 @@ Authorization: Bearer <your_token>
 
 ## Status
 
-Active development. Current build covers JWT authentication, three-role RBAC, complete report lifecycle (SUBMITTED → ASSIGNED → IN_PROGRESS → RESOLVED), department management, and input validation. Frontend and response DTOs planned.
+Active development. Current build covers JWT authentication, three-role RBAC, complete report lifecycle (SUBMITTED → ASSIGNED → IN_PROGRESS → RESOLVED), assignment enforcement at service layer, department management, and input validation. Frontend and response DTOs planned.
 
 ---
 
