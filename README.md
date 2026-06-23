@@ -1,4 +1,3 @@
-```markdown
 # CivilReport Backend
 
 A REST API for citizen civil issue reporting — built with Spring Boot 3.3 and Java 21.
@@ -25,7 +24,26 @@ Citizens submit reports, officers handle them, admins oversee the workflow.
 - **Role-Based Access Control** — three roles: `USER`, `OFFICER`, `ADMIN`
 - **Report Workflow** — citizens submit reports, admins assign them to officers, officers track their queue
 - **Department Management** — standalone department reference data (CRUD)
-- **Secure Endpoints** — each route protected by role; no endpoint is accidentally public
+- **Input Validation** — request validation using `@Valid` annotations throughout
+- **Dedicated Request DTOs** — separate DTO classes per domain (user, report) keeping entities clean
+- **Secure Endpoints** — every route protected by role; no endpoint is accidentally public
+- **Exception Handling** — global exception handler with consistent error response structure
+
+---
+
+## Architecture
+
+Every request passes through the following layers:
+
+~~~
+HTTP Request
+    → JWT Authentication Filter
+    → Security Context (role verification)
+    → Controller (request handling + @Valid)
+    → Service (business logic)
+    → Repository (JPA)
+    → PostgreSQL
+~~~
 
 ---
 
@@ -94,6 +112,16 @@ src/main/java/civil/
 
 ---
 
+## Role Overview
+
+| Role | Permissions |
+|---|---|
+| `USER` | Submit reports, view own report by ID |
+| `OFFICER` | View reports assigned to them via `/my-reports` |
+| `ADMIN` | View all users, assign reports to officers, manage departments |
+
+---
+
 ## Getting Started
 
 ### Prerequisites
@@ -124,7 +152,7 @@ spring.jpa.open-in-view=false
 jwt.secret=YOUR_JWT_SECRET_MIN_32_CHARS
 ```
 
-> `application-dev.properties` is gitignored and never committed. Never put real credentials in `application.properties`.
+**Note:** Never commit real credentials. `application-dev.properties` is gitignored.
 
 **3. Run the application**
 ```bash
@@ -135,32 +163,19 @@ API available at `http://localhost:8080`.
 
 **4. Test with Postman**
 
-For protected routes, first hit `/api/v1/auth/login` to get a JWT token, then add it to subsequent requests:
+Call `/api/v1/auth/login` first to get a JWT token, then add it to protected requests:
 ```
 Authorization: Bearer <your_token>
 ```
 
 ---
 
-## Role Overview
-
-| Role | Permissions |
-|---|---|
-| `USER` | Submit reports, view own report by ID |
-| `OFFICER` | View reports assigned to them via `/my-reports` |
-| `ADMIN` | View all users, assign reports to officers, manage departments |
-
----
-
 ## Status
 
-Active development. Current build covers authentication, report submission and assignment workflow, user management, and department reference data. Frontend and additional officer features planned.
+Active development. Current build covers JWT authentication, three-role RBAC, report submission and assignment workflow, department management, and input validation. Response DTOs and additional officer features planned.
 
 ---
 
 ## License
 
 MIT
-```
-
-**Status section added** — honest one-paragraph note that this is in active development. Looks professional, sets expectations, and explains the "In Progress" state without making it sound unfinished.
