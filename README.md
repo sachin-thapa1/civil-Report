@@ -73,22 +73,22 @@ src/main/java/civil/
 │   ├── JwtUtil                   # Token generation and validation
 │   └── SecurityConfig            # Route protection and role definitions
 ├── department/
-│   ├── controller/        # REST endpoints
+│   ├── controller/
 │   ├── entity/            # Department entity — no DTO, entity used directly
-│   ├── repository/        # JPA repository
-│   └── service/           # Business logic
+│   ├── repository/
+│   └── service/
 ├── report/
-│   ├── controller/        # REST endpoints
+│   ├── controller/
 │   ├── dto/               # ReportRequestDto, AssignReportRequest
 │   ├── entity/            # Report, ReportCategory (enum), ReportStatus (enum)
-│   ├── repository/        # JPA repository
-│   └── service/           # Submission and assignment logic
+│   ├── repository/
+│   └── service/
 ├── user/
-│   ├── controller/        # User management endpoints
+│   ├── controller/
 │   ├── dto/               # UserRequestDto
 │   ├── entity/            # User, UserRole (enum)
-│   ├── repository/        # JPA repository
-│   └── service/           # User logic; also used by auth
+│   ├── repository/
+│   └── service/
 └── CivilReportApplication.java
 ```
 
