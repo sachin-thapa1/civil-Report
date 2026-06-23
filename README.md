@@ -1,5 +1,3 @@
-Here is your final README, updated to match your actual code:
-
 ```markdown
 # CivilReport Backend
 
@@ -66,28 +64,31 @@ Citizens submit reports, officers handle them, admins oversee the workflow.
 ```
 src/main/java/civil/
 ├── auth/
-│   └── controller/        # Register, login
+│   └── controller/        # Auth endpoints only; delegates to user service
 ├── common/
-│   ├── dto/               # Shared DTOs (ErrorResponse)
-│   └── exception/         # GlobalExceptionHandler
-├── config/                # SecurityConfig, JwtUtil, JwtAuthenticationFilter
+│   ├── Dto/               # Shared DTOs — ErrorResponse
+│   └── exception/         # GlobalExceptionHandler — consistent error responses
+├── config/
+│   ├── JwtAuthenticationFilter   # Intercepts and validates JWT on every request
+│   ├── JwtUtil                   # Token generation and validation
+│   └── SecurityConfig            # Route protection and role definitions
 ├── department/
-│   ├── controller/
-│   ├── entity/
-│   ├── repository/
-│   └── service/
+│   ├── controller/        # REST endpoints
+│   ├── entity/            # Department entity — no DTO, entity used directly
+│   ├── repository/        # JPA repository
+│   └── service/           # Business logic
 ├── report/
-│   ├── controller/
+│   ├── controller/        # REST endpoints
 │   ├── dto/               # ReportRequestDto, AssignReportRequest
-│   ├── entity/            # Report, ReportCategory, ReportStatus
-│   ├── repository/
-│   └── service/
+│   ├── entity/            # Report, ReportCategory (enum), ReportStatus (enum)
+│   ├── repository/        # JPA repository
+│   └── service/           # Submission and assignment logic
 ├── user/
-│   ├── controller/
+│   ├── controller/        # User management endpoints
 │   ├── dto/               # UserRequestDto
-│   ├── entity/            # User, UserRole
-│   ├── repository/
-│   └── service/
+│   ├── entity/            # User, UserRole (enum)
+│   ├── repository/        # JPA repository
+│   └── service/           # User logic; also used by auth
 └── CivilReportApplication.java
 ```
 
@@ -109,7 +110,7 @@ CREATE DATABASE civil_report;
 
 **2. Configure credentials**
 
-Copy `application-example.properties` to `application-dev.properties`:
+Create `src/main/resources/application-dev.properties`:
 ```properties
 spring.datasource.url=jdbc:postgresql://localhost:5432/civil_report
 spring.datasource.username=YOUR_USERNAME
@@ -123,7 +124,7 @@ spring.jpa.open-in-view=false
 jwt.secret=YOUR_JWT_SECRET_MIN_32_CHARS
 ```
 
-> `application-dev.properties` is gitignored and never committed.
+> `application-dev.properties` is gitignored and never committed. Never put real credentials in `application.properties`.
 
 **3. Run the application**
 ```bash
@@ -134,7 +135,7 @@ API available at `http://localhost:8080`.
 
 **4. Test with Postman**
 
-For protected routes, first call `/api/v1/auth/login`, copy the returned JWT, then add it to your request headers:
+For protected routes, first hit `/api/v1/auth/login` to get a JWT token, then add it to subsequent requests:
 ```
 Authorization: Bearer <your_token>
 ```
@@ -146,8 +147,14 @@ Authorization: Bearer <your_token>
 | Role | Permissions |
 |---|---|
 | `USER` | Submit reports, view own report by ID |
-| `OFFICER` | View reports assigned to them |
-| `ADMIN` | View all users, assign reports, manage departments |
+| `OFFICER` | View reports assigned to them via `/my-reports` |
+| `ADMIN` | View all users, assign reports to officers, manage departments |
+
+---
+
+## Status
+
+Active development. Current build covers authentication, report submission and assignment workflow, user management, and department reference data. Frontend and additional officer features planned.
 
 ---
 
@@ -156,6 +163,4 @@ Authorization: Bearer <your_token>
 MIT
 ```
 
-**Save this as `README.md` and push to GitHub.**
-
-Your project is complete and CV-ready. Good work.
+**Status section added** — honest one-paragraph note that this is in active development. Looks professional, sets expectations, and explains the "In Progress" state without making it sound unfinished.
