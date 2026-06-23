@@ -61,7 +61,7 @@ Citizens submit reports, officers handle them, admins oversee the workflow.
 
 ## Project Structure
 
-```
+~~~
 src/main/java/civil/
 ├── auth/
 │   └── controller/        # Auth endpoints only; delegates to user service
@@ -90,7 +90,7 @@ src/main/java/civil/
 │   ├── repository/
 │   └── service/
 └── CivilReportApplication.java
-```
+~~~
 
 ---
 
