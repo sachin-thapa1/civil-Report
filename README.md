@@ -22,14 +22,13 @@ Citizens submit reports, officers handle them, admins oversee the workflow.
 
 - **JWT Authentication** — register and login with token-based auth
 - **Role-Based Access Control** — three roles: `USER`, `OFFICER`, `ADMIN`
-- **Report Workflow** — citizens submit reports, admins assign them to officers, officers track their queue
+- **Full Report Lifecycle** — four-stage workflow: `SUBMITTED` → `ASSIGNED` → `IN_PROGRESS` → `RESOLVED`
+- **Role-Scoped Report Access** — users see own submissions, officers see assigned reports, admins see all
 - **Department Management** — standalone department reference data (CRUD)
 - **Input Validation** — request validation using `@Valid` annotations throughout
-- **Dedicated Request DTOs** — separate DTO classes per domain (user, report) keeping entities clean
-- **Secure Endpoints** — every route protected by role; no endpoint is accidentally public
+- **Dedicated Request DTOs** — separate DTO classes per domain keeping entities clean
+- **Secure Endpoints** — every route protected by role
 - **Exception Handling** — global exception handler with consistent error response structure
-- **Full Report Lifecycle** — four-stage workflow: `SUBMITTED` → `ASSIGNED` → `IN_PROGRESS` → `RESOLVED`
-- **Status Updates** — officers update report progress; citizens track resolution in real time
 
 ---
 
@@ -52,32 +51,34 @@ HTTP Request
 ## API Reference
 
 ### Auth
-| Method | Endpoint | Access |
-|---|---|---|
-| POST | `/api/v1/auth/register` | Public |
-| POST | `/api/v1/auth/login` | Public |
+| Method | Endpoint | USER | OFFICER | ADMIN |
+|---|---|---|---|---|
+| POST | `/api/v1/auth/register` | ✅ | ✅ | ✅ |
+| POST | `/api/v1/auth/login` | ✅ | ✅ | ✅ |
 
 ### Users
-| Method | Endpoint | Access |
-|---|---|---|
-| GET | `/api/v1/users` | Admin only |
+| Method | Endpoint | USER | OFFICER | ADMIN |
+|---|---|---|---|---|
+| GET | `/api/v1/users` | ❌ | ❌ | ✅ |
+| GET | `/api/v1/users/me` | ✅ | ✅ | ✅ |
 
 ### Reports
-| Method | Endpoint | Access |
-|---|---|---|
-| POST | `/api/v1/reports` | Authenticated |
-| GET | `/api/v1/reports/{id}` | Authenticated |
-| POST | `/api/v1/reports/{id}/assign` | Admin only |
-| GET | `/api/v1/reports/my-reports` | Officer only |
-| POST | `/api/v1/reports/{id}/status` | Officer only |
-| GET | `/api/v1/reports/my-submissions` | USER |
+| Method | Endpoint | USER | OFFICER | ADMIN |
+|---|---|---|---|---|
+| POST | `/api/v1/reports` | ✅ | ✅ | ✅ |
+| GET | `/api/v1/reports` | ✅ | ✅ | ✅ |
+| GET | `/api/v1/reports/{id}` | ✅ | ✅ | ✅ |
+| GET | `/api/v1/reports/my-submissions` | ✅ | ❌ | ❌ |
+| GET | `/api/v1/reports/my-reports` | ❌ | ✅ | ❌ |
+| POST | `/api/v1/reports/{id}/assign` | ❌ | ❌ | ✅ |
+| POST | `/api/v1/reports/{id}/status` | ❌ | ✅ | ❌ |
 
 ### Departments
-| Method | Endpoint | Access |
-|---|---|---|
-| POST | `/api/v1/departments` | Admin only |
-| GET | `/api/v1/departments` | Authenticated |
-| GET | `/api/v1/departments/{id}` | Authenticated |
+| Method | Endpoint | USER | OFFICER | ADMIN |
+|---|---|---|---|---|
+| POST | `/api/v1/departments` | ❌ | ❌ | ✅ |
+| GET | `/api/v1/departments` | ✅ | ✅ | ✅ |
+| GET | `/api/v1/departments/{id}` | ✅ | ✅ | ✅ |
 
 ---
 
@@ -120,8 +121,8 @@ src/main/java/civil/
 
 | Role | Permissions |
 |---|---|
-| `USER` | Submit reports, view own submissions, track status |
-| `OFFICER` | View assigned reports, update report status |
+| `USER` | Register, submit reports, view own submissions, track status |
+| `OFFICER` | Submit reports, view assigned reports, update report status |
 | `ADMIN` | View all users, assign reports to officers, manage departments |
 
 ---
