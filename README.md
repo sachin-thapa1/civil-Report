@@ -28,6 +28,8 @@ Citizens submit reports, officers handle them, admins oversee the workflow.
 - **Dedicated Request DTOs** — separate DTO classes per domain (user, report) keeping entities clean
 - **Secure Endpoints** — every route protected by role; no endpoint is accidentally public
 - **Exception Handling** — global exception handler with consistent error response structure
+- **Full Report Lifecycle** — four-stage workflow: `SUBMITTED` → `ASSIGNED` → `IN_PROGRESS` → `RESOLVED`
+- **Status Updates** — officers update report progress; citizens track resolution in real time
 
 ---
 
@@ -67,6 +69,8 @@ HTTP Request
 | GET | `/api/v1/reports/{id}` | Authenticated |
 | POST | `/api/v1/reports/{id}/assign` | Admin only |
 | GET | `/api/v1/reports/my-reports` | Officer only |
+| POST | `/api/v1/reports/{id}/status` | Officer only |
+| GET | `/api/v1/reports/my-submissions` | USER |
 
 ### Departments
 | Method | Endpoint | Access |
@@ -116,8 +120,8 @@ src/main/java/civil/
 
 | Role | Permissions |
 |---|---|
-| `USER` | Submit reports, view own report by ID |
-| `OFFICER` | View reports assigned to them via `/my-reports` |
+| `USER` | Submit reports, view own submissions, track status |
+| `OFFICER` | View assigned reports, update report status |
 | `ADMIN` | View all users, assign reports to officers, manage departments |
 
 ---
@@ -172,7 +176,7 @@ Authorization: Bearer <your_token>
 
 ## Status
 
-Active development. Current build covers JWT authentication, three-role RBAC, report submission and assignment workflow, department management, and input validation. Response DTOs and additional officer features planned.
+Active development. Current build covers JWT authentication, three-role RBAC, complete report lifecycle (SUBMITTED → ASSIGNED → IN_PROGRESS → RESOLVED), department management, and input validation. Frontend and response DTOs planned.
 
 ---
 
