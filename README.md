@@ -21,7 +21,7 @@ Citizens submit reports, officers handle them, admins oversee the workflow.
 ## Features
 
 - **JWT Authentication** — register and login with token-based auth
-- **Role-Based Access Control** — three roles: `USER`, `OFFICER`, `ADMIN`
+- **Role-Based Access Control** — four roles: `USER`, `OFFICER`, `ADMIN`, `SUPER_ADMIN`
 - **Full Report Lifecycle** — four-stage workflow: `SUBMITTED` → `ASSIGNED` → `IN_PROGRESS` → `RESOLVED`
 - **Role-Scoped Report Access** — users see own submissions, officers see assigned reports, admins see all
 - **Assignment Enforcement** — officers can only update status on reports explicitly assigned to them
@@ -30,6 +30,8 @@ Citizens submit reports, officers handle them, admins oversee the workflow.
 - **Dedicated Request DTOs** — separate DTO classes per domain keeping entities clean
 - **Secure Endpoints** — every route protected by role
 - **Exception Handling** — global exception handler with consistent error response structure
+- **Auto-Routing by Category** — reports automatically assigned to matching department on submission; only unmatched categories require manual admin assignment
+- **Four Roles** — `USER`, `OFFICER`, `ADMIN`, `SUPER_ADMIN`
 
 ---
 
@@ -129,6 +131,7 @@ All roles can submit reports and view their own submissions via `/my-submissions
 | `USER` | Track own report status through full lifecycle |
 | `OFFICER` | View assigned reports, update status (assigned reports only) |
 | `ADMIN` | View all users, assign reports to officers, manage departments |
+| `SUPER_ADMIN` | Full system access — planned for Phase 2 |
 
 ---
 
@@ -182,7 +185,7 @@ Authorization: Bearer <your_token>
 
 ## Status
 
-Active development. Current build covers JWT authentication, three-role RBAC, complete report lifecycle (SUBMITTED → ASSIGNED → IN_PROGRESS → RESOLVED), assignment enforcement at service layer, department management, and input validation. Frontend and response DTOs planned.
+Active development. Current build covers JWT authentication, four-role RBAC, complete report lifecycle, auto-routing by category, assignment enforcement, department management, and input validation. Phase 2 planned: department-scoped roles, super admin features, and response DTOs.
 
 ---
 
