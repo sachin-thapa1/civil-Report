@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: civilreport-api
+    runtime: docker
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: civilreport-db
+          property: connectionString
+      - key: DATABASE_USERNAME
+        fromDatabase:
+          name: civilreport-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: civilreport-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+
+databases:
+  - name: civilreport-db
+    plan: free
+    ipAllowList: []
