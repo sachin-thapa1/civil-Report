@@ -34,7 +34,7 @@ public class DepartmentController {
         return ResponseEntity.ok(departmentService.getAllDepartments());
     }
 
-    // GET /api/v1/departments/{id}
+
     @GetMapping("/{id}")
     public ResponseEntity<Department> getDepartmentById(@PathVariable UUID id) {
         return ResponseEntity.ok(departmentService.getDepartmentById(id));

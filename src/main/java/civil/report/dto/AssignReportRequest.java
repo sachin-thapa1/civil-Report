@@ -1,8 +1,9 @@
 package civil.report.dto;
 
 import lombok.Data;
+import java.util.UUID;
 
 @Data
 public class AssignReportRequest {
-    private String officerId;  // UUID of officer to assign
+    private UUID officerId;
 }
