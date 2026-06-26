@@ -3,6 +3,12 @@
 A REST API for citizen civil issue reporting — built with Spring Boot 3.3 and Java 21.
 Citizens submit reports, officers handle them, admins oversee the workflow.
 
+Live: https://civil-report.onrender.com
+
+API is fully explorable via Swagger UI — register, login, copy your JWT token, authorize, and test all endpoints directly in the browser. No Postman required.
+
+**Note:** Hosted on Render free tier — may take 30–60 seconds to wake on first request.
+
 ---
 
 ## Tech Stack
@@ -15,6 +21,7 @@ Citizens submit reports, officers handle them, admins oversee the workflow.
 | ORM | Spring Data JPA / Hibernate |
 | Database | PostgreSQL |
 | Utilities | Lombok |
+| API Docs | Swagger / OpenAPI |
 
 ---
 
@@ -23,6 +30,7 @@ Citizens submit reports, officers handle them, admins oversee the workflow.
 - **JWT Authentication** — register and login with token-based auth
 - **Role-Based Access Control** — four roles: `USER`, `OFFICER`, `ADMIN`, `SUPER_ADMIN`
 - **Full Report Lifecycle** — four-stage workflow: `SUBMITTED` → `ASSIGNED` → `IN_PROGRESS` → `RESOLVED`
+- **Auto-Routing by Category** — reports automatically assigned to matching department on submission; only unmatched categories require manual admin assignment
 - **Role-Scoped Report Access** — users see own submissions, officers see assigned reports, admins see all
 - **Assignment Enforcement** — officers can only update status on reports explicitly assigned to them
 - **Department Management** — standalone department reference data (CRUD)
@@ -30,8 +38,7 @@ Citizens submit reports, officers handle them, admins oversee the workflow.
 - **Dedicated Request DTOs** — separate DTO classes per domain keeping entities clean
 - **Secure Endpoints** — every route protected by role
 - **Exception Handling** — global exception handler with consistent error response structure
-- **Auto-Routing by Category** — reports automatically assigned to matching department on submission; only unmatched categories require manual admin assignment
-- **Four Roles** — `USER`, `OFFICER`, `ADMIN`, `SUPER_ADMIN`
+- **Swagger UI** — fully interactive API documentation; authorize with JWT and test endpoints in browser
 
 ---
 
@@ -110,7 +117,7 @@ src/main/java/civil/
 │   ├── dto/               # ReportRequestDto, AssignReportRequest
 │   ├── entity/            # Report, ReportCategory (enum), ReportStatus (enum)
 │   ├── repository/
-│   └── service/           # Includes assignment enforcement logic
+│   └── service/           # Includes assignment enforcement and auto-routing logic
 ├── user/
 │   ├── controller/
 │   ├── dto/               # UserRequestDto
@@ -174,18 +181,15 @@ jwt.secret=YOUR_JWT_SECRET_MIN_32_CHARS
 
 API available at `http://localhost:8080`.
 
-**4. Test with Postman**
+**4. Explore with Swagger**
 
-Call `/api/v1/auth/login` first to get a JWT token, then add it to protected requests:
-```
-Authorization: Bearer <your_token>
-```
+Visit `http://localhost:8080/swagger-ui/index.html` locally or `https://civil-report.onrender.com` for the live version. Register, login, copy your JWT token, click Authorize, and test all endpoints directly in the browser.
 
 ---
 
 ## Status
 
-Active development. Current build covers JWT authentication, four-role RBAC, complete report lifecycle, auto-routing by category, assignment enforcement, department management, and input validation. Phase 2 planned: department-scoped roles, super admin features, and response DTOs.
+Live on Render. Current build covers JWT authentication, four-role RBAC, complete report lifecycle (SUBMITTED → ASSIGNED → IN_PROGRESS → RESOLVED), auto-routing by category, assignment enforcement, department management, input validation, and Swagger UI. Phase 2 planned: department-scoped roles, super admin features, and response DTOs.
 
 ---
 
